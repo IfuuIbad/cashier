@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\Item;
+use App\Models\ItemCategory;
+use Auth;
+
 
 class CartController extends Controller
 {
@@ -14,7 +18,15 @@ class CartController extends Controller
      */
     public function index()
     {
-        //
+        $itemCarts = Cart::with('item')->where('user_id', '=', Auth::user()->id)->get();
+        $categories = ItemCategory::all();
+
+        $totalPrice = 0;
+        foreach ($itemCarts as $cart) {
+            $totalPrice = $totalPrice + ($cart->item->price * $cart->quantity);
+        }
+
+        return view('checkout', compact(['items', 'itemCarts', 'totalPrice', 'categories']));
     }
 
     /**
@@ -66,12 +78,14 @@ class CartController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Cart $cart
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Cart $cart)
     {
-        //
+        $cart->update(request()->all());
+
+    	return redirect()->back();
     }
 
     /**
