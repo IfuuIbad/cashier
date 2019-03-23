@@ -17,4 +17,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'ItemController@index')->name('home');
+
+Route::post('/cart', 'CartController@index')->name('cart.index');
+Route::post('/cart/store', 'CartController@store')->name('cart.store');
+Route::patch('/cart/{cart}', 'CartController@update')->name('cart.update');
+Route::delete('/cart/{cart}', 'CartController@destroy')->name('cart.destroy');
